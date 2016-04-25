@@ -148,9 +148,7 @@ object ResumableFileUploadServer {
   }
 
   def haveFinished(fileIdentifer: String, chunkSize: Long, totalSize: Long): Boolean = {
-    bytesWritten.put(fileIdentifer, bytesWritten.getOrDefault(fileIdentifer, 0L) + chunkSize)
-    println(bytesWritten.getOrDefault(fileIdentifer, 0L), totalSize, chunkSize)
-    bytesWritten.get(fileIdentifer) == totalSize
+    chunksSeen.get(fileIdentifer).forall(x => x)
   }
 
   def addSeenChunk(fileIdentifer: String, chunkNumber: Int) = {
@@ -169,7 +167,6 @@ object ResumableFileUploadServer {
     chunksSeen.put(fileIdentifer, Array.fill(numberOfChunksRequired.toInt)(false))
   }
 
-  val bytesWritten = new ConcurrentHashMap[String, Long]
   val chunksSeen = new ConcurrentHashMap[String, Array[Boolean]]()
 
   def main(args: Array[String]) {
