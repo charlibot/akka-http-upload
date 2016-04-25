@@ -149,6 +149,7 @@ object ResumableFileUploadServer {
 
   def haveFinished(fileIdentifer: String, chunkSize: Long, totalSize: Long): Boolean = {
     bytesWritten.put(fileIdentifer, bytesWritten.getOrDefault(fileIdentifer, 0L) + chunkSize)
+    println(bytesWritten.getOrDefault(fileIdentifer, 0L), totalSize, chunkSize)
     bytesWritten.get(fileIdentifer) == totalSize
   }
 
