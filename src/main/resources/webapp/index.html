@@ -47,9 +47,9 @@
       <script>
         var r = new Resumable({
             target:'/java-example/upload',
-            chunkSize:1*1024*1024,
+            chunkSize:8*1024*1024,
             simultaneousUploads:4,
-            testChunks: true,
+            testChunks: false,
             throttleProgressCallbacks:1,
             method: "octet"
           });

@@ -106,7 +106,7 @@ object ResumableFileUploadServer {
             complete {
               byteSource.runWith(sink).map { bytesWritten =>
                 rafOutputStream.close()
-                addSeenChunk(resInfo.resumableIdentifier, resInfo.resumableChunkNumber)
+                addSeenChunk(resInfo.resumableIdentifier, resInfo.resumableChunkNumber, resInfo.resumableChunkSize, resInfo.resumableTotalSize)
                 if (haveFinished(resInfo.resumableIdentifier, resInfo.resumableCurrentChunkSize, resInfo.resumableTotalSize)) {
                   val file = new File(filePath)
                   val newPath = file.getAbsolutePath().substring(0, file.getAbsolutePath().length() - ".temp".length())
@@ -151,7 +151,10 @@ object ResumableFileUploadServer {
     chunksSeen.get(fileIdentifer).forall(x => x)
   }
 
-  def addSeenChunk(fileIdentifer: String, chunkNumber: Int) = {
+  def addSeenChunk(fileIdentifer: String, chunkNumber: Int, normalChunkSize: Long, totalSize: Long) = {
+    if (!chunksSeen.containsKey(fileIdentifer)) {
+      addNewFileInChunksSeen(fileIdentifer, normalChunkSize, totalSize)
+    }
     chunksSeen.get(fileIdentifer)(chunkNumber - 1) = true
   }
 
